@@ -16,7 +16,7 @@ export default class App extends CoreApp {
       });
     });
 
-    
+    // This is required to set apollo client/root on context before creating the client.
     const preRenderPlugin = (ctx, next) => {
       ctx.apolloClient = getClient(ctx);
       ctx.apolloRoot = root;
@@ -27,6 +27,8 @@ export default class App extends CoreApp {
   }
 }
 
+// This is required so we trigger this plugin to render the element with the client
+// before any other plugins trigger (like routing).
 function ApolloSSR() {
   return function middleware(ctx, next) {
     ctx.element = ctx.apolloRoot({client: ctx.apolloClient});
