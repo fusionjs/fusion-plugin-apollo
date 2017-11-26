@@ -1,5 +1,7 @@
 /* eslint-env browser */
-import CoreApp from 'fusion-core';
+// Replaced with fusion-core-beta until https://github.com/fusionjs/fusion-core/pull/33 lands
+// import CoreApp from 'fusion-core';
+import CoreApp from 'fusion-core-beta';
 import {prepare} from 'fusion-react-async';
 import serverRender from './server';
 import clientRender from './client';
