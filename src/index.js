@@ -1,7 +1,12 @@
 /* eslint-env browser */
+import React from 'react';
+
 import CoreApp from 'fusion-core';
 import {prepare} from 'fusion-react-async';
 import {html} from 'fusion-core';
+
+import {ApolloProvider} from 'react-apollo';
+
 import serverRender from './server';
 import clientRender from './client';
 
@@ -11,7 +16,7 @@ import Provider from './provider';
 
 export default class App extends CoreApp {
   constructor(root, getClient) {
-    super(null, el => {
+    super(root, el => {
       return prepare(el).then(() => {
         return __NODE__ ? serverRender(el) : clientRender(el);
       });
@@ -19,31 +24,27 @@ export default class App extends CoreApp {
 
     // This is required to set apollo client/root on context before creating the client.
     const preRenderPlugin = (ctx, next) => {
-      ctx.apolloRoot = root;
-      ctx.apolloClient = getClient(ctx);
-      return next();
+      if (!ctx.element) {
+        return next();
+      }
+      const client = getClient(ctx);
+      ctx.element = (
+        <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
+      );
+      if (__NODE__) {
+        return next().then(() => {
+          const initialState = client.cache.extract();
+          const serialized = JSON.stringify(initialState);
+          const script = html`<script type="application/json" id="__APOLLO_STATE__">${serialized}</script>`;
+          ctx.body.body.push(script);
+        });
+      } else {
+        return next();
+      }
     };
 
-    this.plugins.unshift(preRenderPlugin);
+    this.plugin(() => preRenderPlugin);
   }
 }
 
-// This is required so we trigger this plugin to render the element with the client
-// before any other plugins trigger (like routing).
-function ApolloSSR() {
-  return function middleware(ctx, next) {
-    ctx.element = ctx.apolloRoot({client: ctx.apolloClient});
-    if (__NODE__) {
-      return next().then(() => {
-        const initialState = ctx.apolloClient.cache.extract();
-        const serialized = JSON.stringify(initialState);
-        const script = html`<script type="application/json" id="__APOLLO_STATE__">${serialized}</script>`;
-        ctx.body.body.push(script);
-      });
-    } else {
-      return next();
-    }
-  };
-}
-
-export {ApolloSSR, ProviderPlugin, ProvidedHOC, Provider};
+export {ProviderPlugin, ProvidedHOC, Provider};

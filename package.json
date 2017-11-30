@@ -1,7 +1,7 @@
 {
   "name": "fusion-apollo",
   "description": "FusionJS entry point for React universal rendering /w Apollo",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "license": "MIT",
   "repository": "fusionjs/fusion-apollo",
   "main": "./dist/node.cjs.js",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.0.0",
+    "babel-preset-react": "^6.24.1",
     "create-universal-package": "^1.0.0-rc.14",
     "eslint": "^4.2.0",
     "eslint-config-fusion": "^0.1.2",
