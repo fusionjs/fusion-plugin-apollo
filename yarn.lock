@@ -1562,9 +1562,9 @@ functional-red-black-tree@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
 
-fusion-core@^0.1.4:
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/fusion-core/-/fusion-core-0.1.8.tgz#2a71b98c6e0c59d3aba949e14e119051dc27f261"
+fusion-core@0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/fusion-core/-/fusion-core-0.2.4.tgz#566a785c04e9e253fdae9259784a656a5252a1d1"
   dependencies:
     koa "^2.3.0"
     koa-compose "^4.0.0"
