@@ -10,9 +10,7 @@ import {ApolloProvider} from 'react-apollo';
 import serverRender from './server';
 import clientRender from './client';
 
-import ProviderPlugin from './plugin';
-import ProvidedHOC from './hoc';
-import Provider from './provider';
+import {ProviderPlugin, ProvidedHOC, Provider} from 'fusion-react';
 
 export default class App extends CoreApp {
   constructor(root, getClient) {

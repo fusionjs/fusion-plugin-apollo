@@ -56,5 +56,7 @@
   "engines": {
     "node": ">= 8.9.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "fusion-react": "^0.1.10"
+  }
 }
