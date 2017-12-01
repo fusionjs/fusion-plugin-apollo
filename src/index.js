@@ -6,6 +6,7 @@ import {prepare} from 'fusion-react-async';
 import {html} from 'fusion-core';
 
 import {ApolloProvider} from 'react-apollo';
+import {unescape} from 'fusion-core';
 
 import serverRender from './server';
 import clientRender from './client';
@@ -25,10 +26,21 @@ export default class App extends CoreApp {
       if (!ctx.element) {
         return next();
       }
-      const client = getClient(ctx);
+
+      // Deserialize initial state for the browser
+      let initialState = null;
+      if (__BROWSER__) {
+        initialState = JSON.parse(
+          unescape(document.getElementById('__APOLLO_STATE__').textContent)
+        );
+      }
+
+      // Create the client and apollo provider
+      const client = getClient(ctx, initialState);
       ctx.element = (
         <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
       );
+
       if (__NODE__) {
         return next().then(() => {
           const initialState = client.cache.extract();

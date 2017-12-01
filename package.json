@@ -29,10 +29,11 @@
     "eslint-plugin-flowtype": "^2.35.0",
     "eslint-plugin-prettier": "^2.1.2",
     "eslint-plugin-react": "^7.1.0",
-    "fusion-core": "0.2.4",
+    "fusion-core": "^0.2.4",
     "fusion-react-async": "^0.1.4",
     "prettier": "1.4.2",
     "react": "16.1.1",
+    "react-apollo": "^2.0.1",
     "react-dom": "^16.0.0",
     "tape-cup": "^4.7.1",
     "unitest": "^1.0.0"
@@ -47,7 +48,7 @@
     "prepublish": "npm run transpile"
   },
   "peerDependencies": {
-    "fusion-core": "^0.1.4",
+    "fusion-core": "^0.2.4",
     "fusion-react-async": "^0.1.4",
     "react": "14.x - 16.x",
     "react-apollo": "^2.0.1",
