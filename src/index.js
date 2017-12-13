@@ -1,9 +1,12 @@
+// @flow
+
 /* eslint-env browser */
 import React from 'react';
 
 import CoreApp, {html, unescape} from 'fusion-core';
 import {prepare} from 'fusion-react-async';
 
+import {ApolloClient} from 'apollo-client';
 import {ApolloProvider} from 'react-apollo';
 
 import {ProviderPlugin, ProvidedHOC, Provider} from 'fusion-react';
@@ -12,7 +15,7 @@ import serverRender from './server';
 import clientRender from './client';
 
 export default class App extends CoreApp {
-  constructor(root, getClient) {
+  constructor(root: React$Element<any>, getClient: (any, any) => ApolloClient) {
     super(root, el => {
       return prepare(el).then(() => {
         return __NODE__ ? serverRender(el) : clientRender(el);
@@ -28,8 +31,9 @@ export default class App extends CoreApp {
       // Deserialize initial state for the browser
       let initialState = null;
       if (__BROWSER__) {
+        const elementState = document.getElementById('__APOLLO_STATE__');
         initialState = JSON.parse(
-          unescape(document.getElementById('__APOLLO_STATE__').textContent)
+          unescape(elementState && elementState.textContent)
         );
       }
 

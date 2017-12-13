@@ -1,0 +1,6 @@
+**/flow-typed/**/*.js
+node_modules/
+dist/
+dist-tests/
+coverage/
+.nyc_output/

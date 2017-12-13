@@ -20,6 +20,7 @@
     "./dist/browser.es.js": "./dist/browser.es.es2015.js"
   },
   "devDependencies": {
+    "apollo-client": "^2.1.0",
     "babel-eslint": "^8.0.0",
     "babel-preset-react": "^6.24.1",
     "create-universal-package": "^1.0.0-rc.14",
@@ -31,18 +32,20 @@
     "eslint-plugin-prettier": "^2.1.2",
     "eslint-plugin-react": "^7.1.0",
     "flow-bin": "^0.59.0",
-    "fusion-core": "^0.2.4",
+    "fusion-core": "^0.2.6",
     "fusion-react-async": "^0.1.4",
+    "graphql": "^0.11.7",
+    "graphql-tag": "^2.6.0",
     "prettier": "1.4.2",
     "react": "16.1.1",
-    "react-apollo": "^2.0.1",
+    "react-apollo": "^2.0.4",
     "react-dom": "^16.0.0",
     "tape-cup": "^4.7.1",
     "unitest": "^1.0.0"
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "lint": "eslint . --ignore-path .gitignore",
+    "lint": "eslint .",
     "transpile": "npm run clean && cup build",
     "build-test": "rm -rf dist-tests && cup build-tests",
     "just-test": "node_modules/.bin/unitest --browser=dist-tests/browser.js --node=dist-tests/node.js",
@@ -50,8 +53,10 @@
     "prepublish": "npm run transpile"
   },
   "peerDependencies": {
+    "apollo-client": "^2.1.0",
     "fusion-core": "^0.2.4",
     "fusion-react-async": "^0.1.4",
+    "graphql": "^0.11.7",
     "react": "14.x - 16.x",
     "react-apollo": "^2.0.1",
     "react-dom": "14.x - 16.x"

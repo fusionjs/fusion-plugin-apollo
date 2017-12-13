@@ -1,9 +1,12 @@
+// @flow
 /* eslint-env browser */
 import ReactDOM from 'react-dom';
 
-export default root => {
+export default (root: React$Element<any>) => {
   const domElement = document.getElementById('root');
-  ReactDOM.hydrate
-    ? ReactDOM.hydrate(root, domElement)
-    : ReactDOM.render(root, domElement);
+  if (domElement instanceof HTMLElement) {
+    ReactDOM.hydrate
+      ? ReactDOM.hydrate(root, domElement)
+      : ReactDOM.render(root, domElement);
+  }
 };
