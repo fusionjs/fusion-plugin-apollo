@@ -4,10 +4,11 @@
   "version": "0.0.6",
   "license": "MIT",
   "repository": "fusionjs/fusion-apollo",
-  "main": "./dist/node.cjs.js",
-  "module": "./dist/node.es.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.es.js",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "browser": {
     "./dist/node.cjs.js": "./dist/browser.cjs.js",
@@ -22,7 +23,7 @@
   "devDependencies": {
     "babel-eslint": "^8.0.0",
     "babel-preset-react": "^6.24.1",
-    "create-universal-package": "^1.0.0-rc.14",
+    "create-universal-package": "^3.2.4",
     "eslint": "^4.2.0",
     "eslint-config-fusion": "^0.2.0",
     "eslint-plugin-cup": "^1.0.0-rc.4",
