@@ -21,8 +21,8 @@
     "./dist/browser.es.js": "./dist/browser.es.es2015.js"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.0.0-beta.37",
     "babel-eslint": "^8.0.0",
-    "babel-preset-react": "^6.24.1",
     "create-universal-package": "^3.2.4",
     "eslint": "^4.2.0",
     "eslint-config-fusion": "^0.2.0",
