@@ -35,7 +35,7 @@
     "flow-bin": "0.59.0",
     "fusion-core": "0.3.0",
     "fusion-react-async": "0.2.0",
-    "prettier": "1.4.2",
+    "prettier": "1.10.2",
     "react": "16.2.0",
     "react-apollo": "2.0.4",
     "react-dom": "16.2.0",

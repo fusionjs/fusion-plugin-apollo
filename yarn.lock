@@ -1229,8 +1229,8 @@ camelcase@^1.0.2:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-1.2.1.tgz#9bb5304d2e0b56698b2c758b08a3eaa9daa58a39"
 
 caniuse-lite@^1.0.30000792:
-  version "1.0.30000792"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000792.tgz#d0cea981f8118f3961471afbb43c9a1e5bbf0332"
+  version "1.0.30000802"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000802.tgz#807ead8e2b59a3b90f26702fb0b220623ad9f287"
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -2238,8 +2238,8 @@ fusion-react-async@0.2.0:
     prop-types "^15.5.8"
 
 fusion-react@^0.4.0:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/fusion-react/-/fusion-react-0.4.2.tgz#00fbaebb62c4a616feb0be1c4dc3f0202e4d3371"
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/fusion-react/-/fusion-react-0.4.3.tgz#cd62c1ddfbe1480b948c65aca2b88a7bcf1d9257"
 
 gauge@~2.7.3:
   version "2.7.4"
@@ -3540,9 +3540,9 @@ preserve@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
 
-prettier@1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.4.2.tgz#bcdd95ed1eca434ac7f98ca26ea4d25a2af6a2ac"
+prettier@1.10.2:
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.10.2.tgz#1af8356d1842276a99a5b5529c82dd9e9ad3cc93"
 
 private@^0.1.6:
   version "0.1.8"
