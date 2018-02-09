@@ -2236,9 +2236,9 @@ fusion-react-async@0.2.0:
   dependencies:
     prop-types "^15.5.8"
 
-fusion-react@^0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/fusion-react/-/fusion-react-0.4.3.tgz#cd62c1ddfbe1480b948c65aca2b88a7bcf1d9257"
+fusion-react@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/fusion-react/-/fusion-react-1.0.0.tgz#182eb4f1702a75c4f3097bc0ad2dbd517fa9dcf2"
 
 gauge@~2.7.3:
   version "2.7.4"
