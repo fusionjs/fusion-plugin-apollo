@@ -86,6 +86,7 @@ export default class App extends CoreApp {
             }
           }
                           
+          // apollo-universal-client no longer needs to care about the cache
           const cache = apolloCache.restore(initialState);            
           const ApolloContext = React.createContext('ApolloContext');
           const client = getApolloClient(ctx, cache);
