@@ -28,7 +28,7 @@ import serverRender from './server';
 import clientRender from './client';
 
 type ApolloClientType = {
-  cache: mixed
+  cache: mixed,
 };
 
 export type ApolloClient<TInitialState> = (
