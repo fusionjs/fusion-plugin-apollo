@@ -80,10 +80,12 @@ export default class App extends CoreApp {
 
           // Deserialize initial state for the browser
           let initialState = null;
+          let cache = null;
           if (__BROWSER__) {
             const apolloState = document.getElementById('__APOLLO_STATE__');
             if (apolloState) {
               initialState = JSON.parse(unescape(apolloState.textContent));
+              cache = apolloCache.restore(initialState);
             }
           }
 
@@ -94,7 +96,7 @@ export default class App extends CoreApp {
               <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
             );
           } else {        
-            const cache = apolloCache.restore(initialState);
+            // Create React Context and use cache to create client instead of initialState
             const ApolloContext = React.createContext('ApolloContext');
             const client = getApolloClient(ctx, cache);
             ctx.element = (
