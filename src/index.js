@@ -38,8 +38,8 @@ export type ApolloClient<TStateOrCache> = (
   cache: TCache,
 ) => ApolloClientType;
 
-export const GetApolloClientToken: Token<ApolloClient<mixed>> = createToken(
-  'GetApolloClientToken'
+export const ApolloClientToken: Token<ApolloClient<mixed>> = createToken(
+  'ApolloClientToken'
 );
 
 export type ApolloContext<T> = (Context => T) | T;
@@ -63,7 +63,6 @@ export default class App extends CoreApp {
     const renderer = createPlugin({
       deps: {
         getApolloClient: GetApolloClientToken,
-        apolloCache: ApolloCacheToken = new InMemoryCache(),
       },
       provides() {
         return el => {
@@ -72,7 +71,7 @@ export default class App extends CoreApp {
           });
         };
       },
-      middleware({getApolloClient, apolloCache}) {
+      middleware({getApolloClient}) {
         // This is required to set apollo client/root on context before creating the client.
         return (ctx, next) => {
           if (!ctx.element) {
@@ -81,15 +80,14 @@ export default class App extends CoreApp {
           
           // Deserialize initial state for the browser
           let initialState = null;
-          let cache = apolloCache;
+          let cache = client.cache;
           let client = getApolloClient(ctx, cache);
                               
           if (__BROWSER__) {
             const apolloState = document.getElementById('__APOLLO_STATE__');
             if (apolloState) {
-              initialState = JSON.parse(unescape(apolloState.textContent));
-              cache = apolloCache.restore(initialState);
-              client = getApolloClient(ctx, cache);
+              initialState = JSON.parse(unescape(apolloState.textContent));             
+              client = getApolloClient(ctx, initialState);
             }
           }
           
