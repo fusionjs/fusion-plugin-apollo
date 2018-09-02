@@ -79,17 +79,20 @@ export default class App extends CoreApp {
           
           // Deserialize initial state for the browser
           let initialState = null;
+          let cache = apolloCache;
+          let client = getApolloClient(ctx, cache);
+          
+          const ApolloContext = React.createContext('ApolloContext');
+          
           if (__BROWSER__) {
             const apolloState = document.getElementById('__APOLLO_STATE__');
             if (apolloState) {
               initialState = JSON.parse(unescape(apolloState.textContent));
+              cache = apolloCache.restore(initialState);
+              client = getApolloClient(ctx, cache);
             }
           }
-                          
-          // apollo-universal-client no longer needs to care about the cache
-          const cache = apolloCache.restore(initialState);            
-          const ApolloContext = React.createContext('ApolloContext');
-          const client = getApolloClient(ctx, cache);
+          
           ctx.element = (
             <ApolloContext.Provider cache={cache}>
               <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
