@@ -24,8 +24,6 @@ import {
 import type {Element} from 'react';
 import type {Context, Token} from 'fusion-core';
 
-import {InMemoryCache} from 'apollo-cache-inmemory';
-
 import serverRender from './server';
 import clientRender from './client';
 
