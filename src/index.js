@@ -27,7 +27,9 @@ import type {Context, Token} from 'fusion-core';
 import serverRender from './server';
 import clientRender from './client';
 
-type ApolloClientType = mixed;
+type ApolloClientType = {
+  cache: mixed
+};
 
 export type ApolloClient<TInitialState> = (
   ctx: Context,
