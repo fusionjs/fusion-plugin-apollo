@@ -29,9 +29,11 @@ import clientRender from './client';
 
 type ApolloClientType = mixed;
 
-export type ApolloClient<TInitialState> = (
+type TStateOrCache = mixed
+
+export type ApolloClient<TStateOrCache> = (
   ctx: Context,
-  initialState: TInitialState
+  initialStateOrCache: TStateOrCache,
 ) => ApolloClientType;
 
 export const ApolloClientToken: Token<ApolloClient<mixed>> = createToken(
@@ -39,6 +41,10 @@ export const ApolloClientToken: Token<ApolloClient<mixed>> = createToken(
 );
 
 export type ApolloContext<T> = (Context => T) | T;
+
+export type ApolloCacheToken : Token<any> = createToken(
+  'ApolloCacheToken'
+);
 
 export const ApolloContextToken: Token<ApolloContext<mixed>> = createToken(
   'ApolloContextToken'
@@ -53,6 +59,7 @@ export default class App extends CoreApp {
     const renderer = createPlugin({
       deps: {
         getApolloClient: ApolloClientToken,
+        getApolloCache: ApolloCacheToken = new InMemoryCache(),
       },
       provides() {
         return el => {
@@ -61,38 +68,46 @@ export default class App extends CoreApp {
           });
         };
       },
-      middleware({getApolloClient}) {
+      middleware({getApolloClient, getApolloCache}) {
         // This is required to set apollo client/root on context before creating the client.
         return (ctx, next) => {
           if (!ctx.element) {
             return next();
           }
-
-          // Deserialize initial state for the browser
-          let initialState = null;
-          if (__BROWSER__) {
-            const apolloState = document.getElementById('__APOLLO_STATE__');
-            if (apolloState) {
-              initialState = JSON.parse(unescape(apolloState.textContent));
+          
+          if (getApolloCache === null) {
+            // Deserialize initial state for the browser
+            let initialState = null;
+            if (__BROWSER__) {
+              const apolloState = document.getElementById('__APOLLO_STATE__');
+              if (apolloState) {
+                initialState = JSON.parse(unescape(apolloState.textContent));
+              }
             }
-          }
 
-          // Create the client and apollo provider
-          const client = getApolloClient(ctx, initialState);
-          ctx.element = (
-            <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
-          );
+            // Create the client and apollo provider
+            const client = getApolloClient(ctx, initialState);
+            ctx.element = (
+              <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
+            );
 
-          if (__NODE__) {
-            return middleware(ctx, next).then(() => {
-              // $FlowFixMe
-              const initialState = client.cache.extract();
-              const serialized = JSON.stringify(initialState);
-              const script = html`<script type="application/json" id="__APOLLO_STATE__">${serialized}</script>`;
-              ctx.template.body.push(script);
-            });
+            if (__NODE__) {
+              return middleware(ctx, next).then(() => {
+                // $FlowFixMe
+                const initialState = client.cache.extract();
+                const serialized = JSON.stringify(initialState);
+                const script = html`<script type="application/json" id="__APOLLO_STATE__">${serialized}</script>`;
+                ctx.template.body.push(script);
+              });
+            } else {
+              return middleware(ctx, next);
+            }
           } else {
-            return middleware(ctx, next);
+            const ApolloContext = React.createContext('ApolloContext');
+            const client = getApolloClient(ctx, getApolloCache);
+            ctx.element = (
+              <ApolloContext.Provider context={ {client, cache: getApolloCache} }>{ctx.element}</ApolloContext.Provider>
+            )
           }
         };
       },
