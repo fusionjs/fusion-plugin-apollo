@@ -33,9 +33,9 @@ type ApolloClientType = mixed;
 
 type TCache = mixed
 
-export type ApolloClient<TStateOrCache> = (
+export type ApolloClient<TInitialState> = (
   ctx: Context,
-  cache: TCache,
+  initialState: TInitialState
 ) => ApolloClientType;
 
 export const ApolloClientToken: Token<ApolloClient<mixed>> = createToken(
