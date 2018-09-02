@@ -77,48 +77,42 @@ export default class App extends CoreApp {
             return next();
           }
           
-          if (getApolloCache === null) {
-            // Deserialize initial state for the browser
-            let initialState = null;
-            if (__BROWSER__) {
-              const apolloState = document.getElementById('__APOLLO_STATE__');
-              if (apolloState) {
-                initialState = JSON.parse(unescape(apolloState.textContent));
-              }
-            }
 
+          // Deserialize initial state for the browser
+          let initialState = null;
+          if (__BROWSER__) {
+            const apolloState = document.getElementById('__APOLLO_STATE__');
+            if (apolloState) {
+              initialState = JSON.parse(unescape(apolloState.textContent));
+            }
+          }
+
+          if (apolloCache === null) {
             // Create the client and apollo provider
             const client = getApolloClient(ctx, initialState);
             ctx.element = (
               <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
             );
-
-            if (__NODE__) {
-              return middleware(ctx, next).then(() => {
-                // $FlowFixMe
-                const initialState = client.cache.extract();
-                const serialized = JSON.stringify(initialState);
-                const script = html`<script type="application/json" id="__APOLLO_STATE__">${serialized}</script>`;
-                ctx.template.body.push(script);
-              });
-            } else {
-              return middleware(ctx, next);
-            }
-          } else {
-            let cache = null;
-            if (__BROWSER__) {
-              const apolloState = document.getElementById('__APOLLO_STATE__');
-              if (apolloState) {
-                initialState = JSON.parse(unescape(apolloState.textContent));
-              }
-              cache = apolloCache.restore(initialState);  
-            } 
+          } else {        
+            const cache = apolloCache.restore(initialState);
             const ApolloContext = React.createContext('ApolloContext');
             const client = getApolloClient(ctx, cache);
             ctx.element = (
               <ApolloContext.Provider context={ {client, cache} }>{ctx.element}</ApolloContext.Provider>
             )
           }
+
+          if (__NODE__) {
+            return middleware(ctx, next).then(() => {
+              // $FlowFixMe
+              const initialState = client.cache.extract();
+              const serialized = JSON.stringify(initialState);
+              const script = html`<script type="application/json" id="__APOLLO_STATE__">${serialized}</script>`;
+              ctx.template.body.push(script);
+            });
+          } else {
+            return middleware(ctx, next);
+          }          
         };
       },
     });
