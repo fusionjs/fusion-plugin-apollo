@@ -60,7 +60,7 @@ export default class App extends CoreApp {
   constructor(root: Element<*>) {
     const renderer = createPlugin({
       deps: {
-        getApolloClient: ApolloClientToken,
+        getApolloClient: GetApolloClientToken,
         apolloCache: ApolloCacheToken = new InMemoryCache(),
       },
       provides() {
