@@ -48,6 +48,8 @@ export const GraphQLSchemaToken: Token<string> = createToken(
   'GraphQlSchemaToken'
 );
 
+export const ApolloContextProvider = React.createContext('ApolloContextProvider');
+
 export default class App extends CoreApp {
   constructor(root: Element<*>) {
     const renderer = createPlugin({
@@ -80,7 +82,9 @@ export default class App extends CoreApp {
           // Create the client and apollo provider
           const client = getApolloClient(ctx, initialState);
           ctx.element = (
-            <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
+            <ApolloContextProvider cache={client.cache}>
+              <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
+            </ApolloContextProvider>
           );
 
           if (__NODE__) {
