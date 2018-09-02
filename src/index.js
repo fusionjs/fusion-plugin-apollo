@@ -48,11 +48,13 @@ export const GraphQLSchemaToken: Token<string> = createToken(
   'GraphQlSchemaToken'
 );
 
+export const ApolloContext = React.createContext('ApolloContext');
+
 export default class App extends CoreApp {
   constructor(root: Element<*>) {
     const renderer = createPlugin({
       deps: {
-        getApolloClient: ApolloClientToken,
+        getApolloClient: GetApolloClientToken,
       },
       provides() {
         return el => {
@@ -67,22 +69,26 @@ export default class App extends CoreApp {
           if (!ctx.element) {
             return next();
           }
-
+          
           // Deserialize initial state for the browser
           let initialState = null;
+                              
           if (__BROWSER__) {
             const apolloState = document.getElementById('__APOLLO_STATE__');
             if (apolloState) {
-              initialState = JSON.parse(unescape(apolloState.textContent));
+              initialState = JSON.parse(unescape(apolloState.textContent));             
             }
           }
-
-          // Create the client and apollo provider
-          const client = getApolloClient(ctx, initialState);
+          
+          let client = getApolloClient(ctx, initialState);
+          const cache = client.cache;
+          
           ctx.element = (
-            <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
-          );
-
+            <ApolloContext.Provider cache={cache}>
+              <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
+            </ApolloContext.Provider>
+          )
+          
           if (__NODE__) {
             return middleware(ctx, next).then(() => {
               // $FlowFixMe
@@ -93,7 +99,7 @@ export default class App extends CoreApp {
             });
           } else {
             return middleware(ctx, next);
-          }
+          }          
         };
       },
     });
