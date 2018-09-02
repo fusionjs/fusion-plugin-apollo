@@ -24,6 +24,8 @@ import {
 import type {Element} from 'react';
 import type {Context, Token} from 'fusion-core';
 
+import {InMemoryCache} from 'apollo-cache-inmemory';
+
 import serverRender from './server';
 import clientRender from './client';
 
@@ -36,8 +38,8 @@ export type ApolloClient<TStateOrCache> = (
   initialStateOrCache: TStateOrCache,
 ) => ApolloClientType;
 
-export const ApolloClientToken: Token<ApolloClient<mixed>> = createToken(
-  'ApolloClientToken'
+export const GetApolloClientToken: Token<ApolloClient<mixed>> = createToken(
+  'GetApolloClientToken'
 );
 
 export type ApolloContext<T> = (Context => T) | T;
@@ -59,7 +61,7 @@ export default class App extends CoreApp {
     const renderer = createPlugin({
       deps: {
         getApolloClient: ApolloClientToken,
-        getApolloCache: ApolloCacheToken = new InMemoryCache(),
+        apolloCache: ApolloCacheToken = new InMemoryCache(),
       },
       provides() {
         return el => {
@@ -68,7 +70,7 @@ export default class App extends CoreApp {
           });
         };
       },
-      middleware({getApolloClient, getApolloCache}) {
+      middleware({getApolloClient, apolloCache}) {
         // This is required to set apollo client/root on context before creating the client.
         return (ctx, next) => {
           if (!ctx.element) {
@@ -103,10 +105,18 @@ export default class App extends CoreApp {
               return middleware(ctx, next);
             }
           } else {
+            let cache = null;
+            if (__BROWSER__) {
+              const apolloState = document.getElementById('__APOLLO_STATE__');
+              if (apolloState) {
+                initialState = JSON.parse(unescape(apolloState.textContent));
+              }
+              cache = apolloCache.restore(initialState);  
+            } 
             const ApolloContext = React.createContext('ApolloContext');
-            const client = getApolloClient(ctx, getApolloCache);
+            const client = getApolloClient(ctx, cache);
             ctx.element = (
-              <ApolloContext.Provider context={ {client, cache: getApolloCache} }>{ctx.element}</ApolloContext.Provider>
+              <ApolloContext.Provider context={ {client, cache} }>{ctx.element}</ApolloContext.Provider>
             )
           }
         };
