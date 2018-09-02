@@ -31,11 +31,11 @@ import clientRender from './client';
 
 type ApolloClientType = mixed;
 
-type TStateOrCache = mixed
+type TCache = mixed
 
 export type ApolloClient<TStateOrCache> = (
   ctx: Context,
-  initialStateOrCache: TStateOrCache,
+  cache: TCache,
 ) => ApolloClientType;
 
 export const GetApolloClientToken: Token<ApolloClient<mixed>> = createToken(
@@ -77,7 +77,6 @@ export default class App extends CoreApp {
             return next();
           }
           
-
           // Deserialize initial state for the browser
           let initialState = null;
           if (__BROWSER__) {
@@ -86,23 +85,16 @@ export default class App extends CoreApp {
               initialState = JSON.parse(unescape(apolloState.textContent));
             }
           }
-
-          if (apolloCache === null) {
-            const client = getApolloClient(ctx, initialState);
-            ctx.element = (
+                          
+          const cache = apolloCache.restore(initialState);            
+          const ApolloContext = React.createContext('ApolloContext');
+          const client = getApolloClient(ctx, cache);
+          ctx.element = (
+            <ApolloContext.Provider cache={cache}>
               <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
-            );
-          } else {        
-            const cache = apolloCache.restore(initialState);            
-            const ApolloContext = React.createContext('ApolloContext');
-            const client = getApolloClient(ctx, cache);
-            ctx.element = (
-              <ApolloContext.Provider cache={cache}>
-                <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
-              </ApolloContext.Provider>
-            )
-          }
-
+            </ApolloContext.Provider>
+          )
+          
           if (__NODE__) {
             return middleware(ctx, next).then(() => {
               // $FlowFixMe
