@@ -84,7 +84,7 @@ export default class App extends CoreApp {
           // Create the client and apollo provider
           const client = getApolloClient(ctx, initialState);
           ctx.element = (
-            <ApolloCacheContext.Provider cache={client.cache}>
+            <ApolloCacheContext.Provider value={client.cache}>
               <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
             </ApolloCacheContext.Provider>
           );
