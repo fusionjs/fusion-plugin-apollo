@@ -31,8 +31,6 @@ import clientRender from './client';
 
 type ApolloClientType = mixed;
 
-type TCache = mixed
-
 export type ApolloClient<TInitialState> = (
   ctx: Context,
   initialState: TInitialState
@@ -43,10 +41,6 @@ export const ApolloClientToken: Token<ApolloClient<mixed>> = createToken(
 );
 
 export type ApolloContext<T> = (Context => T) | T;
-
-export type ApolloCacheToken : Token<any> = createToken(
-  'ApolloCacheToken'
-);
 
 export const ApolloContextToken: Token<ApolloContext<mixed>> = createToken(
   'ApolloContextToken'
