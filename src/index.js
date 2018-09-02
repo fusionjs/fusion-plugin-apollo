@@ -50,7 +50,7 @@ export const GraphQLSchemaToken: Token<string> = createToken(
   'GraphQlSchemaToken'
 );
 
-export const ApolloCacheContext = React.createContext();
+export const FusionApolloContext = React.createContext();
 
 export default class App extends CoreApp {
   constructor(root: Element<*>) {
@@ -84,9 +84,9 @@ export default class App extends CoreApp {
           // Create the client and apollo provider
           const client = getApolloClient(ctx, initialState);
           ctx.element = (
-            <ApolloCacheContext.Provider value={client.cache}>
+            <FusionApolloContext.Provider value={client.cache}>
               <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
-            </ApolloCacheContext.Provider>
+            </FusionApolloContext.Provider>
           );
 
           if (__NODE__) {
