@@ -50,7 +50,7 @@ export const GraphQLSchemaToken: Token<string> = createToken(
   'GraphQlSchemaToken'
 );
 
-export const ApolloCacheContext = React.createContext('ApolloCacheContext');
+export const ApolloCacheContext = React.createContext();
 
 export default class App extends CoreApp {
   constructor(root: Element<*>) {
