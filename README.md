@@ -64,7 +64,10 @@ A plugin, which provides an instance of [Apollo Client](https://www.apollographq
 ###### Types
 
 ```flow
-type ApolloClient<TInitialState> = (ctx: Context, initialState: TInitialState) => ApolloClientType;
+type ApolloClient<TInitialState> = (
+  ctx: Context,
+  initialState: TInitialState
+) => ApolloClientType;
 ```
 
 ##### ApolloContextToken
@@ -106,12 +109,12 @@ A class that represents an application. An application is responsible for render
 **Constructor**
 
 ```flow
-const app: App = new App(el: ReactElement);
+const app: App = new App((el: ReactElement));
 ```
 
 - `el: ReactElement` - a template root. In a React application, this would be a React element created via `React.createElement` or a JSX expression.
 
-**app.(register|middleware|enhance|cleanup)**
+**app.(register|enhance|cleanup)**
 
 See the [fusion-core app methods](https://github.com/fusionjs/fusion-core#app) for further information on provided methods. Fusion-apollo does not add additional app methods besides the inherited fusion-core methods.
 
