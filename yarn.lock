@@ -2626,10 +2626,10 @@ functional-red-black-tree@^1.0.1:
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
 
-fusion-core@^1.10.0:
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/fusion-core/-/fusion-core-1.10.1.tgz#99a0f2a3dcb1554db87a2b102b7fc031a7b9960d"
-  integrity sha512-XtJc5speIp0Yl0fwx3ri6TRgxQ+G9tW4l5ikMxScQ76yw5MSaXPl8vZwOcUwLjggWcs4oaeIFoV4idkvsQZukw==
+fusion-core@^1.10.1:
+  version "1.10.4"
+  resolved "https://registry.yarnpkg.com/fusion-core/-/fusion-core-1.10.4.tgz#4e0f4e54d4b9992e1a8a31f3dcf2f5e2c8cde8d0"
+  integrity sha512-KAbIXOKLSwek8lKjnx6ChaFE9JgMvhazMh/tmWlDYPtebu3s/JL++I7qZ8chJ8BcO7IhdhjueRZ0IM/2oqFDGA==
   dependencies:
     koa "^2.6.2"
     koa-compose "^4.1.0"
@@ -2638,13 +2638,12 @@ fusion-core@^1.10.0:
     ua-parser-js "^0.7.19"
     uuid "^3.3.2"
 
-fusion-react@1.3.7:
-  version "1.3.7"
-  resolved "https://registry.yarnpkg.com/fusion-react/-/fusion-react-1.3.7.tgz#7ece897feff9ef67c33f13f376929fd5a1e471f6"
-  integrity sha512-Zs60GxwkjEkDb2jqcdxnWmGDxUDtD8VJmT6ipnr66oXQHSDl3iMtUDQIXFFg9mZG6jeRFF+BAK1Bhf3SMKt2PQ==
+fusion-react@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/fusion-react/-/fusion-react-2.0.0.tgz#74c0a9787c6b1db03af2195cb45a8ec27fbc1191"
+  integrity sha512-eN2miThQCo7iGYvjaJtRv7qZBwSX9rUje1RNIp/NvVYHuBPvdfg3DmXlg8OWBx5y4tMFMOOu2DepcyUlrgVSbg==
   dependencies:
     prop-types "^15.6.2"
-    react-is "^16.7.0"
 
 fusion-test-utils@^1.3.0:
   version "1.3.1"
@@ -4645,7 +4644,7 @@ react-dom@^16.6.3:
     prop-types "^15.6.2"
     scheduler "^0.12.0"
 
-react-is@^16.3.2, react-is@^16.7.0:
+react-is@^16.3.2:
   version "16.7.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.7.0.tgz#c1bd21c64f1f1364c6f70695ec02d69392f41bfa"
   integrity sha512-Z0VRQdF4NPDoI0tsXVMLkJLiwEBa+RP66g0xDHxgxysxSoCUccSten4RTF/UFvZF1dZvZ9Zu1sx+MDXwcOR34g==
