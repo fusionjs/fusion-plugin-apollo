@@ -2,11 +2,11 @@
 
 [![Build status](https://badge.buildkite.com/2ac76cfb209dae257969b7464a2c90834ed82705cfd5bfcc52.svg?branch=master)](https://buildkite.com/uberopensource/fusion-apollo)
 
-Fusion.js entry point for React universal rendering with Apollo
+Fusion.js plugin for universal rendering with React and Apollo
 
-Provides a Fusion.js application class that is pre-configured with React and Apollo universal rendering for applications leveraging GraphQL.
+This package provides universal rendering for Fusion.js applications leveraging GraphQL. 
 
-The App class from this package should be used when you want to perform both server and client rendering with GraphQL querying. This package will also provide initial state hydration on the client.
+The plugin will perform graphql queries on the server, thereby rendering your applications initial HTML view on the server before sending it to the client. Additionally this plugin will also provide initial state hydration on the client side.
 
 ---
 
@@ -19,7 +19,7 @@ The App class from this package should be used when you want to perform both ser
     - [`ApolloClientToken`](#apolloclienttoken)
     - [`ApolloContextToken`](#apollocontexttoken)
     - [`GraphQLSchemaToken`](#graphqlschematoken)
-  - [App](#app)
+  - [Plugin](#plugin)
   - [Provider](#providers)
 
 ---
@@ -37,11 +37,17 @@ yarn add fusion-apollo
 ```js
 // ./src/main.js
 import React from 'react';
-import App, {ApolloClientToken} from 'fusion-apollo';
+import App from 'fusion-react';
+import {RenderToken} from 'fusion-core';
+
+// New import provided by this plugin
+import ApolloPlugin, {ApolloClientToken} from 'fusion-apollo';
+// A barebones Apollo Client
 import ApolloClient from 'fusion-apollo-universal-client';
 
 export default function() {
   const app = new App(<Hello />);
+  app.register(RenderToken, ApolloPlugin)
   app.register(ApolloClientToken, ApolloClient);
   return app;
 }
@@ -63,8 +69,6 @@ const schema = gql('./some-schema.graphql');
 ---
 
 ### API
-
-#### Registration API
 
 ##### ApolloClientToken
 
@@ -108,29 +112,14 @@ Define the `GraphQLSchemaToken` when using a locally hosted GraphQL endpoint fro
 type GraphQLSchema = string;
 ```
 
-#### App
+#### Plugin
 
 ```js
-import App from 'fusion-apollo';
+import ApolloPlugin from 'fusion-apollo';
 ```
 
-A class that represents an application. An application is responsible for rendering (both virtual DOM and server-side rendering). The functionality of an application is extended via [plugins](https://github.com/fusionjs/fusion-core#plugin).
+A plugin which is responsible for rendering (both virtual DOM and server-side rendering).
 
-**Constructor**
-
-```js
-const app: App = new App(
-  (el: ReactElement),
-  (render: ?(el: ReactElement) => string)
-);
-```
-
-- `el: ReactElement` - a template root. In a React application, this would be a React element created via `React.createElement` or a JSX expression.
-- `render: ?(el:ReactElement) => string` - Optional. Defines how rendering should occur. 
-
-**app.(register|middleware|enhance|cleanup)**
-
-See the [fusion-core app methods](https://github.com/fusionjs/fusion-core#app) for further information on provided methods. Fusion-apollo does not add additional app methods besides the inherited fusion-core methods.
 
 #### gql
 
@@ -149,11 +138,3 @@ type gql = (path: string): string
 - `path: string` - Relative path to the graphql schema/query file. NOTE: This must be a string literal, dynamic paths are not supported.
 
 ---
-
-#### Providers
-
-As a convenience, fusion-apollo re-exports providers from fusion-react. You can find additional information on those as follows:
-
-- [Provider](https://github.com/fusionjs/fusion-react/blob/master/README.md#provider)
-- [ProviderPlugin](https://github.com/fusionjs/fusion-react/blob/master/README.md#providerplugin)
-- [ProvidedHOC](https://github.com/fusionjs/fusion-react/blob/master/README.md#providedhoc)
