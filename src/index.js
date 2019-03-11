@@ -11,7 +11,7 @@ import React from 'react';
 
 import CoreApp, {createPlugin, createToken, html, unescape} from 'fusion-core';
 import type {ApolloClient} from 'apollo-client';
-import type {DocumentNode} from 'graphql'
+import type {DocumentNode} from 'graphql';
 
 import {ApolloProvider} from 'react-apollo';
 
