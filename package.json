@@ -71,5 +71,9 @@
   },
   "engines": {
     "node": ">= 8.9.0"
+  },
+  "dependencies": {
+    "apollo-server-koa": "^2.4.8",
+    "koa-compose": "^4.1.0"
   }
 }
