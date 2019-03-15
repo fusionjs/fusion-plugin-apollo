@@ -1,15 +1,15 @@
-version: "2"
+version: '2'
 services:
-  fusion-plugin-apollo:
+  fusion-apollo:
     build: .
     volumes:
-      - ".:/fusion-plugin-apollo"
-      - /fusion-plugin-apollo/node_modules/
-      - /fusion-plugin-apollo/dist/
-      - /fusion-plugin-apollo/dist-tests/
-  fusion-plugin-apollo-node-last:
-    extends: fusion-plugin-apollo
+      - '.:/fusion-apollo'
+      - /fusion-apollo/node_modules/
+      - /fusion-apollo/dist/
+      - /fusion-apollo/dist-tests/
+  fusion-apollo-node-last:
+    extends: fusion-apollo
     build:
       context: .
       args:
-        BASE_IMAGE: "uber/web-base-image:1.0.9"
+        BASE_IMAGE: 'uber/web-base-image:1.0.9'
