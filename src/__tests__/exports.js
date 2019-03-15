@@ -1,14 +1,10 @@
 // @flow
 
 import test from 'tape-cup';
-import plugin, {
-  GetApolloContextToken,
-  GraphQLSchemaToken,
-  gql,
-} from '../index.js';
+import plugin, {ApolloContextToken, GraphQLSchemaToken, gql} from '../index.js';
 
 test('fusion-tokens exports', t => {
-  t.ok(GetApolloContextToken, 'exports ApolloContextToken');
+  t.ok(ApolloContextToken, 'exports ApolloContextToken');
   t.ok(GraphQLSchemaToken, 'exports GraphQLSchemaToken');
   t.ok(plugin, 'exports plugin');
   t.equal(typeof gql, 'function', 'exports a gql function');

@@ -12,18 +12,34 @@ import test from 'tape-cup';
 import {getSimulator} from 'fusion-test-utils';
 import React from 'react';
 import render from '../server';
-import plugin, {GraphQLSchemaToken} from '../index';
+import plugin, {GraphQLSchemaToken, ApolloClientToken} from '../index';
 import gql from 'graphql-tag';
 import {makeExecutableSchema} from 'graphql-tools';
 import {Query} from 'react-apollo';
 import App from 'fusion-react/dist';
 import {RenderToken} from 'fusion-core';
+import {ApolloClient} from 'apollo-client';
+import {InMemoryCache} from 'apollo-cache-inmemory';
+import {SchemaLink} from 'apollo-link-schema';
 
 function testApp(el, {typeDefs, resolvers}) {
   const app = new App(el);
   const schema = makeExecutableSchema({typeDefs, resolvers});
   app.register(RenderToken, plugin);
   app.register(GraphQLSchemaToken, schema);
+  app.register(ApolloClientToken, () => {
+    return new ApolloClient({
+      ssrMode: true,
+      cache: new InMemoryCache().restore({}),
+      link: new SchemaLink({
+        schema,
+        context: (...args) => {
+          console.log('args', args);
+          return args[0];
+        },
+      }),
+    });
+  });
   return app;
 }
 
@@ -47,7 +63,7 @@ test('Server render simulate', async t => {
   `;
   const resolvers = {
     Query: {
-      test() {
+      test(parent, args, ctx) {
         return 'test';
       },
     },
@@ -59,7 +75,7 @@ test('Server render simulate', async t => {
   t.end();
 });
 
-test('SSR with <Query>', async t => {
+test.only('SSR with <Query>', async t => {
   const query = gql`
     query Test {
       test
@@ -87,7 +103,9 @@ test('SSR with <Query>', async t => {
   `;
   const resolvers = {
     Query: {
-      test() {
+      test(parent, args, ctx) {
+        console.log('ctx', ctx);
+        // t.equal(ctx.path, '/graphql', 'context defaults correctly');
         return 'test';
       },
     },

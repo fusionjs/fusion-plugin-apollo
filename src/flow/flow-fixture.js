@@ -7,15 +7,15 @@
  */
 
 import App, {createPlugin} from 'fusion-core';
-import {GetApolloContextToken} from '../index.js';
+import {ApolloContextToken} from '../index.js';
 
 const app = new App();
 
-app.register(GetApolloContextToken, ctx => ({
+app.register(ApolloContextToken, ctx => ({
   testcase: ctx.path,
 }));
 
-app.register(GetApolloContextToken, () => ({
+app.register(ApolloContextToken, () => ({
   testcase: 'with no context',
 }));
 
@@ -25,4 +25,4 @@ const plugin = createPlugin({
   },
 });
 
-app.register(GetApolloContextToken, plugin);
+app.register(ApolloContextToken, plugin);

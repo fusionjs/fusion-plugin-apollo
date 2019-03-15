@@ -20,28 +20,19 @@ import {LoggerToken} from 'fusion-tokens';
 import {ApolloServer} from 'apollo-server-koa';
 import compose from 'koa-compose';
 import {
+  ApolloContextToken,
   ApolloCacheContext,
-  GetApolloContextToken,
   GraphQLSchemaToken,
   GraphQLEndpointToken,
-  ApolloServerFormatFunctionToken,
-  GetApolloClientCacheToken,
-  GetApolloClientLinksToken,
-  ApolloClientResolversToken,
-  ApolloClientDefaultOptionsToken,
+  ApolloClientToken,
 } from './tokens';
-import initApolloClientContainer from './apollo-client';
 
 export type DepsType = {
+  apolloContext: typeof ApolloContextToken.optional,
   logger: typeof LoggerToken.optional,
-  getApolloContext: typeof GetApolloContextToken.optional,
   schema: typeof GraphQLSchemaToken,
   endpoint: typeof GraphQLEndpointToken.optional,
-  serverFormat: typeof ApolloServerFormatFunctionToken.optional,
-  getCache: typeof GetApolloClientCacheToken.optional,
-  getApolloLinks: typeof GetApolloClientLinksToken.optional,
-  clientResolvers: typeof ApolloClientResolversToken.optional,
-  clientDefaults: typeof ApolloClientDefaultOptionsToken.optional,
+  getApolloClient: typeof ApolloClientToken,
 };
 
 export type ProvidesType = (el: any, ctx: Context) => Promise<any>;
@@ -49,14 +40,10 @@ export type ProvidesType = (el: any, ctx: Context) => Promise<any>;
 export default createPlugin<DepsType, ProvidesType>({
   deps: {
     logger: LoggerToken.optional,
-    getApolloContext: GetApolloContextToken.optional,
     schema: GraphQLSchemaToken,
     endpoint: GraphQLEndpointToken.optional,
-    serverFormat: ApolloServerFormatFunctionToken.optional,
-    getCache: GetApolloClientCacheToken.optional,
-    getApolloLinks: GetApolloClientLinksToken.optional,
-    clientResolvers: ApolloClientResolversToken.optional,
-    clientDefaults: ApolloClientDefaultOptionsToken.optional,
+    getApolloClient: ApolloClientToken,
+    apolloContext: ApolloContextToken.optional,
   },
   provides(deps) {
     return async (el, ctx) => {
@@ -65,52 +52,52 @@ export default createPlugin<DepsType, ProvidesType>({
   },
   middleware({
     logger,
-    getApolloContext = ctx => ctx,
     schema,
     endpoint = '/graphql',
-    serverFormat,
-    getCache,
-    getApolloLinks,
-    clientResolvers,
-    clientDefaults,
+    getApolloClient,
+    apolloContext = ctx => ctx,
   }) {
-    const getApolloClient = initApolloClientContainer({
-      getCache,
-      endpoint,
-      fetch: undefined,
-      includeCredentials: undefined,
-      getApolloContext,
-      getApolloLinks,
-      schema,
-      resolvers: clientResolvers,
-      defaultOptions: clientDefaults,
-    });
     const renderMiddleware = (ctx, next) => {
       if (!ctx.element) {
         return next();
       }
-
+      let initialState = null;
+      if (__BROWSER__) {
+        // Deserialize initial state for the browser
+        const apolloState = document.getElementById('__APOLLO_STATE__');
+        if (apolloState) {
+          initialState = JSON.parse(unescape(apolloState.textContent));
+        }
+      }
       // Create the client and apollo provider
-      const client = getApolloClient(ctx, null);
+      const client = getApolloClient(ctx, initialState);
       ctx.element = (
         <ApolloCacheContext.Provider value={client.cache}>
           <ApolloProvider client={client}>{ctx.element}</ApolloProvider>
         </ApolloCacheContext.Provider>
       );
 
-      const initialState = client.cache && client.cache.extract();
-      const serialized = JSON.stringify(initialState);
-      const script = html`
-        <script type="application/json" id="__APOLLO_STATE__">
-          ${serialized}
-        </script>
-      `;
-      ctx.template.body.push(script);
+      if (__NODE__) {
+        // Serialize state into html on server side render
+        const initialState = client.cache && client.cache.extract();
+        const serialized = JSON.stringify(initialState);
+        const script = html`
+          <script type="application/json" id="__APOLLO_STATE__">
+            ${serialized}
+          </script>
+        `;
+        ctx.template.body.push(script);
+      }
+
       return next();
     };
+    if (__BROWSER__) {
+      return renderMiddleware;
+    }
     const server = new ApolloServer({
       // TODO: investigate other options
       schema,
+      context: apolloContext,
     });
     let serverMiddleware = [];
     server.applyMiddleware({
