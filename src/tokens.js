@@ -12,7 +12,7 @@ export const GraphQLSchemaToken: Token<string> = createToken(
   'GraphQlSchemaToken'
 );
 
-export type ApolloContext<T> = T | (Context => T);
+export type ApolloContext<T> = Context => T | T;
 
 export const ApolloContextToken: Token<ApolloContext<mixed>> = createToken(
   'ApolloContextToken'

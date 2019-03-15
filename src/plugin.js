@@ -55,7 +55,9 @@ export default createPlugin<DepsType, ProvidesType>({
     schema,
     endpoint = '/graphql',
     getApolloClient,
-    apolloContext = ctx => ctx,
+    apolloContext = ctx => {
+      return ctx;
+    },
   }) {
     const renderMiddleware = (ctx, next) => {
       if (!ctx.element) {
@@ -97,7 +99,12 @@ export default createPlugin<DepsType, ProvidesType>({
     const server = new ApolloServer({
       // TODO: investigate other options
       schema,
-      context: apolloContext,
+      context: ({ctx}) => {
+        if (typeof apolloContext === 'function') {
+          return apolloContext(ctx);
+        }
+        return apolloContext;
+      },
     });
     let serverMiddleware = [];
     server.applyMiddleware({

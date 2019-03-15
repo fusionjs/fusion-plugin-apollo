@@ -27,16 +27,13 @@ function testApp(el, {typeDefs, resolvers}) {
   const schema = makeExecutableSchema({typeDefs, resolvers});
   app.register(RenderToken, plugin);
   app.register(GraphQLSchemaToken, schema);
-  app.register(ApolloClientToken, () => {
+  app.register(ApolloClientToken, ctx => {
     return new ApolloClient({
       ssrMode: true,
       cache: new InMemoryCache().restore({}),
       link: new SchemaLink({
         schema,
-        context: (...args) => {
-          console.log('args', args);
-          return args[0];
-        },
+        context: ctx,
       }),
     });
   });
@@ -75,7 +72,7 @@ test('Server render simulate', async t => {
   t.end();
 });
 
-test.only('SSR with <Query>', async t => {
+test('SSR with <Query>', async t => {
   const query = gql`
     query Test {
       test
@@ -104,8 +101,7 @@ test.only('SSR with <Query>', async t => {
   const resolvers = {
     Query: {
       test(parent, args, ctx) {
-        console.log('ctx', ctx);
-        // t.equal(ctx.path, '/graphql', 'context defaults correctly');
+        t.equal(ctx.path, '/', 'context defaults correctly');
         return 'test';
       },
     },
