@@ -14,8 +14,10 @@ import {createPlugin, html} from 'fusion-core';
 import {ApolloProvider} from 'react-apollo';
 
 import type {Context} from 'fusion-core';
+import {prepare} from 'fusion-react';
 
 import serverRender from './server';
+import clientRender from './client';
 import {LoggerToken} from 'fusion-tokens';
 import {ApolloServer} from 'apollo-server-koa';
 import compose from 'koa-compose';
@@ -47,7 +49,9 @@ export default createPlugin<DepsType, ProvidesType>({
   },
   provides(deps) {
     return async (el, ctx) => {
-      return serverRender(el, deps.logger);
+      return prepare(el).then(() => {
+        return __NODE__ ? serverRender(el, deps.logger) : clientRender(el);
+      });
     };
   },
   middleware({
