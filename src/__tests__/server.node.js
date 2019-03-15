@@ -12,10 +12,7 @@ import test from 'tape-cup';
 import {getSimulator} from 'fusion-test-utils';
 import React from 'react';
 import render from '../server';
-import plugin, {ApolloClientToken, GraphQLSchemaToken} from '../index';
-import {ApolloClient} from 'apollo-client';
-import {InMemoryCache} from 'apollo-cache-inmemory';
-import {SchemaLink} from 'apollo-link-schema';
+import plugin, {GraphQLSchemaToken} from '../index';
 import gql from 'graphql-tag';
 import {makeExecutableSchema} from 'graphql-tools';
 import {Query} from 'react-apollo';
@@ -26,13 +23,6 @@ function testApp(el, {typeDefs, resolvers}) {
   const app = new App(el);
   const schema = makeExecutableSchema({typeDefs, resolvers});
   app.register(RenderToken, plugin);
-  app.register(ApolloClientToken, () => {
-    return new ApolloClient({
-      ssrMode: true,
-      cache: new InMemoryCache().restore({}),
-      link: new SchemaLink({schema}),
-    });
-  });
   app.register(GraphQLSchemaToken, schema);
   return app;
 }

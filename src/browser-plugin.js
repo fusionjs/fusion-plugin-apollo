@@ -8,33 +8,69 @@
 
 /* eslint-env browser */
 import React from 'react';
-
 import {createPlugin, unescape} from 'fusion-core';
-
 import {ApolloProvider} from 'react-apollo';
-
 import type {Context} from 'fusion-core';
-
+import {FetchToken} from 'fusion-tokens';
 import clientRender from './client';
-import {ApolloCacheContext, ApolloClientToken} from './tokens';
+import {
+  ApolloCacheContext,
+  GraphQLEndpointToken,
+  GetApolloClientCacheToken,
+  GetApolloClientLinksToken,
+  ApolloClientResolversToken,
+  ApolloClientDefaultOptionsToken,
+  ApolloClientCredentialsToken,
+} from './tokens';
+import initApolloClientContainer from './apollo-client';
 
 type DepsType = {
-  getApolloClient: typeof ApolloClientToken,
+  fetch: typeof FetchToken,
+  includeCredentials: typeof ApolloClientCredentialsToken.optional,
+  endpoint: typeof GraphQLEndpointToken.optional,
+  getCache: typeof GetApolloClientCacheToken.optional,
+  getApolloLinks: typeof GetApolloClientLinksToken.optional,
+  clientResolvers: typeof ApolloClientResolversToken.optional,
+  clientDefaults: typeof ApolloClientDefaultOptionsToken.optional,
 };
 
 type ProvidesType = (el: any, ctx: Context) => Promise<any>;
 
 export default createPlugin<DepsType, ProvidesType>({
   deps: {
-    getApolloClient: ApolloClientToken,
+    fetch: FetchToken,
+    includeCredentials: ApolloClientCredentialsToken.optional,
+    endpoint: GraphQLEndpointToken.optional,
+    getCache: GetApolloClientCacheToken.optional,
+    getApolloLinks: GetApolloClientLinksToken.optional,
+    clientResolvers: ApolloClientResolversToken.optional,
+    clientDefaults: ApolloClientDefaultOptionsToken.optional,
   },
   provides(deps) {
     return async (el, ctx) => {
       return clientRender(el);
     };
   },
-  middleware({getApolloClient, logger}) {
-    // This is required to set apollo client/root on context before creating the client.
+  middleware({
+    fetch,
+    includeCredentials,
+    endpoint,
+    getCache,
+    getApolloLinks,
+    clientResolvers,
+    clientDefaults,
+  }) {
+    const getApolloClient = initApolloClientContainer({
+      getCache,
+      endpoint,
+      fetch,
+      includeCredentials: undefined,
+      getApolloContext: undefined,
+      getApolloLinks,
+      schema: undefined,
+      resolvers: clientResolvers,
+      defaultOptions: clientDefaults,
+    });
     return (ctx, next) => {
       if (!ctx.element) {
         return next();

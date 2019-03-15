@@ -21,32 +21,42 @@ import {ApolloServer} from 'apollo-server-koa';
 import compose from 'koa-compose';
 import {
   ApolloCacheContext,
-  ApolloClientToken,
-  ApolloContextToken,
+  GetApolloContextToken,
   GraphQLSchemaToken,
-  ApolloServerEndpointToken,
+  GraphQLEndpointToken,
   ApolloServerFormatFunctionToken,
+  GetApolloClientCacheToken,
+  GetApolloClientLinksToken,
+  ApolloClientResolversToken,
+  ApolloClientDefaultOptionsToken,
 } from './tokens';
+import initApolloClientContainer from './apollo-client';
 
 export type DepsType = {
-  getApolloClient: typeof ApolloClientToken,
   logger: typeof LoggerToken.optional,
-  apolloContext: typeof ApolloContextToken.optional,
+  getApolloContext: typeof GetApolloContextToken.optional,
   schema: typeof GraphQLSchemaToken,
-  endpoint: typeof ApolloServerEndpointToken.optional,
+  endpoint: typeof GraphQLEndpointToken.optional,
   serverFormat: typeof ApolloServerFormatFunctionToken.optional,
+  getCache: typeof GetApolloClientCacheToken.optional,
+  getApolloLinks: typeof GetApolloClientLinksToken.optional,
+  clientResolvers: typeof ApolloClientResolversToken.optional,
+  clientDefaults: typeof ApolloClientDefaultOptionsToken.optional,
 };
 
 export type ProvidesType = (el: any, ctx: Context) => Promise<any>;
 
 export default createPlugin<DepsType, ProvidesType>({
   deps: {
-    getApolloClient: ApolloClientToken,
     logger: LoggerToken.optional,
-    apolloContext: ApolloContextToken.optional,
+    getApolloContext: GetApolloContextToken.optional,
     schema: GraphQLSchemaToken,
-    endpoint: ApolloServerEndpointToken.optional,
+    endpoint: GraphQLEndpointToken.optional,
     serverFormat: ApolloServerFormatFunctionToken.optional,
+    getCache: GetApolloClientCacheToken.optional,
+    getApolloLinks: GetApolloClientLinksToken.optional,
+    clientResolvers: ApolloClientResolversToken.optional,
+    clientDefaults: ApolloClientDefaultOptionsToken.optional,
   },
   provides(deps) {
     return async (el, ctx) => {
@@ -54,14 +64,27 @@ export default createPlugin<DepsType, ProvidesType>({
     };
   },
   middleware({
-    getApolloClient,
     logger,
-    apolloContext,
+    getApolloContext = ctx => ctx,
     schema,
     endpoint = '/graphql',
     serverFormat,
+    getCache,
+    getApolloLinks,
+    clientResolvers,
+    clientDefaults,
   }) {
-    // This is required to set apollo client/root on context before creating the client.
+    const getApolloClient = initApolloClientContainer({
+      getCache,
+      endpoint,
+      fetch: undefined,
+      includeCredentials: undefined,
+      getApolloContext,
+      getApolloLinks,
+      schema,
+      resolvers: clientResolvers,
+      defaultOptions: clientDefaults,
+    });
     const renderMiddleware = (ctx, next) => {
       if (!ctx.element) {
         return next();
@@ -89,10 +112,17 @@ export default createPlugin<DepsType, ProvidesType>({
       // TODO: investigate other options
       schema,
     });
-    const serverMiddleware = server.getMiddleware({
+    let serverMiddleware = [];
+    server.applyMiddleware({
+      // TODO: switch to server.getMiddleware once https://github.com/apollographql/apollo-server/pull/2435 lands
+      app: {
+        use: m => {
+          serverMiddleware.push(m);
+        },
+      },
       // TODO: investigate other options
       path: endpoint,
     });
-    return compose([serverMiddleware, renderMiddleware]);
+    return compose([...serverMiddleware, renderMiddleware]);
   },
 });

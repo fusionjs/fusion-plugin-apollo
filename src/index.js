@@ -9,5 +9,5 @@ const plugin = __NODE__ ? ServerPlugin : BrowserPlugin;
 export default ((plugin: any): FusionPlugin<DepsType, ProvidesType>);
 
 export function gql(path: string): DocumentNode {
-  throw new Error('fusion-apollo/gql should be replaced at build time');
+  throw new Error('fusion-plugin-apollo/gql should be replaced at build time');
 }
