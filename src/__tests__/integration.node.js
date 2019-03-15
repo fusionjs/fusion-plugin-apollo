@@ -1,11 +1,8 @@
 // @flow
 import test from 'tape-cup';
-import {getSimulator} from 'fusion-test-utils';
 import React from 'react';
 import plugin, {GraphQLSchemaToken, ApolloClientToken} from '../index';
 import gql from 'graphql-tag';
-import {makeExecutableSchema} from 'graphql-tools';
-import {Query} from 'react-apollo';
 import App from 'fusion-react/dist';
 import {RenderToken} from 'fusion-core';
 import {ApolloClient} from 'apollo-client';
@@ -19,7 +16,7 @@ async function testApp(el, {typeDefs, resolvers}) {
   const port = await getPort();
   const endpoint = `http://localhost:${port}/graphql`;
   const app = new App(el);
-  const schema = makeExecutableSchema({typeDefs, resolvers});
+  const schema = {typeDefs, resolvers};
   const client = new ApolloClient({
     ssrMode: true,
     cache: new InMemoryCache().restore({}),
