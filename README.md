@@ -17,7 +17,9 @@ The plugin will perform graphql queries on the server, thereby rendering your ap
 - [API](#api)
   - [Registration API](#registration-api)
     - [`ApolloContextToken`](#apollocontexttoken)
+    - [`ApolloClientToken`](#apolloclienttoken)
     - [`GraphQLSchemaToken`](#graphqlschematoken)
+    - [`GraphQLEndpointToken`](#graphqlendpointtoken)
   - [Plugin](#plugin)
   - [Provider](#providers)
 
@@ -40,11 +42,21 @@ import App from 'fusion-react';
 import {RenderToken} from 'fusion-core';
 
 // New import provided by this plugin
-import ApolloPlugin from 'fusion-plugin-apollo';
+import ApolloPlugin, {
+  GraphQLSchemaToken, 
+  ApolloClientToken
+} from 'fusion-plugin-apollo';
+
+// Plugin which provides an apollo client pre-configured for universal rendering
+import ApolloUniversalClient from 'fusion-apollo-universal-client';
 
 export default function() {
   const app = new App(<Hello />);
-  app.register(RenderToken, ApolloPlugin)
+  app.register(RenderToken, ApolloPlugin);
+  app.register(ApolloClientToken, ApolloUniversalClient);
+  if (__NODE__) {
+    app.register(GraphQLSchemaToken, YourGraphQLSchema);
+  }
   return app;
 }
 ```
@@ -64,7 +76,19 @@ const schema = gql('./some-schema.graphql');
 
 ---
 
+### API
+
+#### Registration API
+
+##### ApolloClientToken
+
 ```js
+import {ApolloClientToken} from 'fusion-apollo';
+```
+
+A plugin, which provides an instance of [Apollo Client](https://www.apollographql.com/docs/react/api/apollo-client.html), to be registered and used as within the Apollo Provider. You can use [fusion-apollo-universal-client](https://github.com/fusionjs/fusion-apollo-universal-client) as a barebones Apollo Client token.
+
+```flow
 type ApolloClient<TInitialState> = (ctx: Context, initialState: TInitialState) => ApolloClientType;
 ```
 
@@ -86,14 +110,7 @@ type ApolloContext<T> = (ctx: Context => T) | T;
 import {GraphQLSchemaToken} from 'fusion-plugin-apollo';
 ```
 
-Define the `GraphQLSchemaToken` when using a locally hosted GraphQL endpoint from within a Fusion.js application. Connect your schema to a Fusion.js server with [fusion-plugin-apollo-server](https://github.com/fusionjs/fusion-plugin-apollo-server). You can find an example schema in the [graphql-tools repo](https://github.com/apollographql/graphql-tools#example).
-
-
-```js
-type GraphQLSchema = string;
-```
-
-
+Your graphql schema is registered on the `GraphQLSchemaToken` token. This can be an Object of `{typeDefs, resolvers}` or the result from `makeExecutableSchema` or `makeRemoteExecutableSchema` from the `graphql-tools` library.
 
 ##### GraphQLEndpointToken
 
@@ -102,7 +119,6 @@ import {GraphQLEndpointToken} from 'fusion-plugin-apollo';
 ```
 
 Optional - the endpoint for serving the graphql API. Defaults to `'/graphql'`.
-
 
 ```js
 type GraphQLEndpoint = string;
@@ -115,7 +131,6 @@ import ApolloPlugin from 'fusion-plugin-apollo';
 ```
 
 A plugin which is responsible for rendering (both virtual DOM and server-side rendering).
-
 
 #### gql
 

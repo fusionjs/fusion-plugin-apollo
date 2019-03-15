@@ -96,9 +96,10 @@ export default createPlugin<DepsType, ProvidesType>({
     if (__BROWSER__) {
       return renderMiddleware;
     }
+    const opts = schema.typeDefs && schema.resolvers ? schema : {schema};
     const server = new ApolloServer({
+      ...opts,
       // TODO: investigate other options
-      schema,
       context: ({ctx}) => {
         if (typeof apolloContext === 'function') {
           return apolloContext(ctx);

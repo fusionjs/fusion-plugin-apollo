@@ -8,9 +8,8 @@ export type InitApolloClientType<TInitialState> = (
   initialState: TInitialState
 ) => ApolloClient<TInitialState>;
 
-export const GraphQLSchemaToken: Token<string> = createToken(
-  'GraphQlSchemaToken'
-);
+// TODO: Better flow types for the schema
+export const GraphQLSchemaToken: Token<any> = createToken('GraphQlSchemaToken');
 
 export type ApolloContext<T> = Context => T | T;
 
