@@ -103,7 +103,7 @@ export default createPlugin<DepsType, ProvidesType>({
     const opts = schema.typeDefs && schema.resolvers ? schema : {schema};
     const server = new ApolloServer({
       ...opts,
-      // TODO: investigate other options
+      // investigate other options
       context: ({ctx}) => {
         if (typeof apolloContext === 'function') {
           return apolloContext(ctx);
@@ -113,13 +113,13 @@ export default createPlugin<DepsType, ProvidesType>({
     });
     let serverMiddleware = [];
     server.applyMiddleware({
-      // TODO: switch to server.getMiddleware once https://github.com/apollographql/apollo-server/pull/2435 lands
+      // switch to server.getMiddleware once https://github.com/apollographql/apollo-server/pull/2435 lands
       app: {
         use: m => {
           serverMiddleware.push(m);
         },
       },
-      // TODO: investigate other options
+      // investigate other options
       path: endpoint,
     });
     return compose([...serverMiddleware, renderMiddleware]);
