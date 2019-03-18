@@ -83,7 +83,7 @@ const schema = gql('./some-schema.graphql');
 ##### ApolloClientToken
 
 ```js
-import {ApolloClientToken} from 'fusion-apollo';
+import {ApolloClientToken} from 'fusion-plugin-apollo';
 ```
 
 A plugin, which provides an instance of [Apollo Client](https://www.apollographql.com/docs/react/api/apollo-client.html), to be registered and used as within the Apollo Provider. You can use [fusion-apollo-universal-client](https://github.com/fusionjs/fusion-apollo-universal-client) as a barebones Apollo Client token.
