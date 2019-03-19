@@ -1,4 +1,10 @@
-// @flow
+/** Copyright (c) 2018 Uber Technologies, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
+ */
 import React from 'react';
 import {createToken, type Context, type Token} from 'fusion-core';
 import type {ApolloClient} from 'apollo-client';
