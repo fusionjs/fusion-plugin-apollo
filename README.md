@@ -92,10 +92,10 @@ A plugin, which provides an instance of [Apollo Client](https://www.apollographq
 type ApolloClient<TInitialState> = (ctx: Context, initialState: TInitialState) => ApolloClientType;
 ```
 
-##### GetApolloContextToken
+##### ApolloContextToken
 
 ```js
-import {GetApolloContextToken} from 'fusion-plugin-apollo';
+import {ApolloContextToken} from 'fusion-plugin-apollo';
 ```
 
 Optional - A function which returns the apollo context. Defaults to the fusion context. See the [Apollo Client context documentation](https://www.apollographql.com/docs/apollo-server/v2/essentials/data.html#context) for more details.
