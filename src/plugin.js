@@ -27,6 +27,7 @@ import {
   GraphQLSchemaToken,
   GraphQLEndpointToken,
   ApolloClientToken,
+  ApolloServerFormatFunctionToken,
 } from './tokens';
 
 export type DepsType = {
@@ -35,6 +36,7 @@ export type DepsType = {
   schema: typeof GraphQLSchemaToken,
   endpoint: typeof GraphQLEndpointToken.optional,
   getApolloClient: typeof ApolloClientToken,
+  formatError: typeof ApolloServerFormatFunctionToken.optional,
 };
 
 export type ProvidesType = (el: any, ctx: Context) => Promise<any>;
@@ -47,6 +49,7 @@ function getDeps(): DepsType {
       schema: GraphQLSchemaToken,
       endpoint: GraphQLEndpointToken.optional,
       getApolloClient: ApolloClientToken,
+      formatError: ApolloServerFormatFunctionToken.optional,
     };
   }
   // $FlowFixMe
@@ -71,6 +74,7 @@ export default createPlugin<DepsType, ProvidesType>({
     apolloContext = ctx => {
       return ctx;
     },
+    formatError,
   }) {
     const renderMiddleware = (ctx, next) => {
       if (!ctx.element) {
@@ -109,6 +113,7 @@ export default createPlugin<DepsType, ProvidesType>({
     if (__NODE__) {
       const opts = schema.typeDefs && schema.resolvers ? schema : {schema};
       const server = new ApolloServer({
+        formatError,
         ...opts,
         // investigate other options
         context: ({ctx}) => {

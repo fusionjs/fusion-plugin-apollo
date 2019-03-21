@@ -7,7 +7,11 @@
  */
 import test from 'tape-cup';
 import React from 'react';
-import plugin, {GraphQLSchemaToken, ApolloClientToken} from '../index';
+import plugin, {
+  GraphQLSchemaToken,
+  ApolloClientToken,
+  ApolloServerFormatFunctionToken,
+} from '../index';
 import gql from 'graphql-tag';
 import App from 'fusion-react/dist';
 import {RenderToken} from 'fusion-core';
@@ -18,10 +22,9 @@ import getPort from 'get-port';
 import http from 'http';
 import fetch from 'node-fetch';
 
-async function testApp(el, {typeDefs, resolvers}) {
+async function testApp(app, {typeDefs, resolvers}) {
   const port = await getPort();
   const endpoint = `http://localhost:${port}/graphql`;
-  const app = new App(el);
   const schema = {typeDefs, resolvers};
   const client = new ApolloClient({
     ssrMode: true,
@@ -51,7 +54,7 @@ async function testApp(el, {typeDefs, resolvers}) {
   );
   return {app, server, client};
 }
-test('SSR with <Query>', async t => {
+test('handling request', async t => {
   const query = gql`
     query Test {
       test
@@ -71,7 +74,7 @@ test('SSR with <Query>', async t => {
       },
     },
   };
-  const {server, client} = await testApp(el, {typeDefs, resolvers});
+  const {server, client} = await testApp(new App(el), {typeDefs, resolvers});
   const result = await client.query({query});
   t.deepEqual(result, {
     data: {test: 'test'},
@@ -79,6 +82,72 @@ test('SSR with <Query>', async t => {
     networkStatus: 7,
     stale: false,
   });
+  server.close();
+  t.end();
+});
+
+test('handling request with error', async t => {
+  const query = gql`
+    query Test {
+      test
+    }
+  `;
+  const el = <div />;
+  const typeDefs = gql`
+    type Query {
+      test: String
+    }
+  `;
+  const resolvers = {
+    Query: {
+      test(parent, args, ctx) {
+        t.equal(ctx.path, '/graphql', 'context defaults correctly');
+        throw new Error('FAIL');
+      },
+    },
+  };
+  const {server, client} = await testApp(new App(el), {typeDefs, resolvers});
+  try {
+    await client.query({query});
+  } catch (e) {
+    t.ok(e.graphQLErrors);
+    t.equal(e.message, 'GraphQL error: FAIL');
+  }
+  server.close();
+  t.end();
+});
+
+test('handling request with error and custom error format function', async t => {
+  const query = gql`
+    query Test {
+      test
+    }
+  `;
+  const el = <div />;
+  const typeDefs = gql`
+    type Query {
+      test: String
+    }
+  `;
+  const resolvers = {
+    Query: {
+      test(parent, args, ctx) {
+        t.equal(ctx.path, '/graphql', 'context defaults correctly');
+        throw new Error('FAIL');
+      },
+    },
+  };
+  const app = new App(el);
+  app.register(ApolloServerFormatFunctionToken, e => {
+    t.equal(e.message, 'FAIL');
+    return new Error('test');
+  });
+  const {server, client} = await testApp(app, {typeDefs, resolvers});
+  try {
+    await client.query({query});
+  } catch (e) {
+    t.ok(e.message, 'test');
+  }
   server.close();
   t.end();
 });

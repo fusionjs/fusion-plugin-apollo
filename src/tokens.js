@@ -34,3 +34,7 @@ export const GraphQLEndpointToken: Token<string> = createToken(
 export const ApolloClientToken: Token<
   InitApolloClientType<mixed>
 > = createToken('ApolloClientToken');
+
+export const ApolloServerFormatFunctionToken: Token<Function> = createToken(
+  'ApolloServerFormatFunctionToken'
+);

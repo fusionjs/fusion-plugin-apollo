@@ -20,6 +20,7 @@ The plugin will perform graphql queries on the server, thereby rendering your ap
     - [`ApolloClientToken`](#apolloclienttoken)
     - [`GraphQLSchemaToken`](#graphqlschematoken)
     - [`GraphQLEndpointToken`](#graphqlendpointtoken)
+    - [`ApolloServerFormatFunctionToken`](#ApolloServerFormatFunctionToken)
   - [Plugin](#plugin)
   - [Provider](#providers)
 
@@ -123,6 +124,13 @@ Optional - the endpoint for serving the graphql API. Defaults to `'/graphql'`.
 ```js
 type GraphQLEndpoint = string;
 ```
+##### ApolloServerFormatFunctionToken
+
+```js
+import {ApolloServerFormatFunctionToken} from 'fusion-plugin-apollo-server';
+```
+
+Register function to format errors from resolvers. Could be used for logging.
 
 #### Plugin
 
