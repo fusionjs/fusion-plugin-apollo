@@ -42,13 +42,13 @@ type ResolveFn = (
   context: Context,
   info: GraphQLResolveInfo
 ) => Promise<any>;
-type MiddlewareType = (
+export type GraphQLMiddlewareType = (
   resolve: ResolveFn,
   root: any,
   args: any,
   context: Context,
   info: GraphQLResolveInfo
 ) => Promise<any>;
-export const GraphQLMiddlewareToken: Token<MiddlewareType[]> = createToken(
-  'GraphQLMiddlewareToken'
-);
+export const GraphQLMiddlewareToken: Token<
+  GraphQLMiddlewareType[]
+> = createToken('GraphQLMiddlewareToken');
