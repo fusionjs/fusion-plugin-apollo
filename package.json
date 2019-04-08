@@ -28,8 +28,7 @@
     "apollo-link-http": "^1.5.12",
     "apollo-link-schema": "^1.1.4",
     "apollo-server-koa": "^2.4.8",
-    "koa-compose": "^4.1.0",
-    "nyc": "^13.3.0"
+    "koa-compose": "^4.1.0"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.0.0",
@@ -60,7 +59,8 @@
     "redux": "^4.0.1",
     "tape-cup": "^4.7.1",
     "unfetch": "^4.1.0",
-    "unitest": "^2.1.1"
+    "unitest": "^2.1.1",
+    "nyc": "^13.3.0"
   },
   "peerDependencies": {
     "fusion-core": "^1.10.4",
