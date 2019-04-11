@@ -125,6 +125,7 @@ test('SSR with <Query>', async t => {
   const ctx = await simulator.render('/');
   t.equal(ctx.rendered.includes('test'), true, 'renders correctly');
   t.equal(ctx.rendered.includes('Loading'), false, 'does not render loading');
+  t.ok(ctx.body.includes('ROOT_QUERY'), 'includes serialized data');
   t.end();
 });
 
