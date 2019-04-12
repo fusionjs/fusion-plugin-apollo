@@ -100,11 +100,8 @@ export default (renderFn: Render) =>
           // Serialize state into html on server side render
           const initialState = client.cache && client.cache.extract();
           const serialized = JSON.stringify(initialState);
-          const script = html`
-            <script type="application/json" id="__APOLLO_STATE__">
-              ${String(serialized)}
-            </script>
-          `;
+          // eslint-disable-next-line prettier/prettier
+          const script = html`<script type="application/json" id="__APOLLO_STATE__">${String(serialized)}</script>`;
           ctx.template.body.push(script);
         }
       };
