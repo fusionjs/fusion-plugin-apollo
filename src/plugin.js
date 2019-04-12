@@ -9,7 +9,7 @@
 /* eslint-env browser */
 import React from 'react';
 
-import {createPlugin, html} from 'fusion-core';
+import {createPlugin, html, unescape} from 'fusion-core';
 
 import {ApolloProvider} from 'react-apollo';
 
