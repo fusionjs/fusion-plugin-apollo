@@ -205,9 +205,14 @@ Optional - Provides the resolvers for [local state management](https://www.apoll
 
 ```js
 import { ApolloBodyParserConfigToken } from "fusion-apollo-universal-client";
+// Example for increasing the json limit
+app.register(ApolloBodyParserConfigToken, {
+  jsonLimit: '5mb',
+});
 ```
 
 Optional - Provides body parser config to koa-bodyparser for apollo-server. See https://github.com/koajs/bodyparser
+
 
 #### gql
 
